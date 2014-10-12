@@ -1,0 +1,119 @@
+Copyrights-intgamig
+===================
+//Codes owned by international gaming roleplay
+
+CMD:makeleader(playerid, params[])
+{
+	if (PlayerInfo[playerid][pAdmin] >= 5 || PlayerInfo[playerid][pFactionModerator] >= 2)
+	{
+		new giveplayerid;
+		if(sscanf(params, "u", giveplayerid)) {
+			SendClientMessageEx(playerid, COLOR_GREY, "USAGE: /makeleader [player]");
+		}
+		else {
+			if(IsPlayerConnected(giveplayerid))	{
+   				SetPVarInt(playerid, "MakingLeader", giveplayerid);
+   				SetPVarInt(playerid, "MakingLeaderSQL", GetPlayerSQLId(giveplayerid));
+				Group_ListGroups(playerid, DIALOG_MAKELEADER);
+			}
+			else SendClientMessageEx(playerid, COLOR_GREY, "Invalid player specified.");
+		}
+	}
+	else SendClientMessageEx(playerid, COLOR_GRAD1, "You are not authorized to use that command.");
+
+	return 1;
+}
+
+else if (dialogid == DIALOG_MAKELEADER && response)
+	{
+		if (PlayerInfo[playerid][pAdmin] >= 5 || PlayerInfo[playerid][pFactionModerator] >= 2)
+		{
+			new
+				iGroupID = listitem,
+				iTargetID = GetPVarInt(playerid, "MakingLeader");
+
+			if(!arrGroupData[iGroupID][g_szGroupName][0]) { return SendClientMessageEx(playerid, COLOR_GREY, "This group has not been properly set up yet."); }
+
+			PlayerInfo[iTargetID][pLeader] = iGroupID;
+			PlayerInfo[iTargetID][pMember] = iGroupID;
+			PlayerInfo[iTargetID][pRank] = Group_GetMaxRank(iGroupID);
+			PlayerInfo[iTargetID][pDivision] = -1;
+			PlayerInfo[iTargetID][pFMember] = INVALID_FAMILY_ID;
+			format(string, sizeof(string), "You have been made the leader of the %s by Administrator %s.", arrGroupData[iGroupID][g_szGroupName], GetPlayerNameEx(playerid));
+			SendClientMessageEx(iTargetID, COLOR_LIGHTBLUE, string);
+			format(string, sizeof(string), "You have made %s the leader of the %s.", GetPlayerNameEx(iTargetID), arrGroupData[iGroupID][g_szGroupName]);
+			SendClientMessageEx(playerid, COLOR_LIGHTBLUE, string);
+			format(string, sizeof(string), "%s have made %s the leader of the %s.", GetPlayerNameEx(playerid), GetPlayerNameEx(playerid), arrGroupData[iGroupID][g_szGroupName]);
+			Log("logs/group.log", string);
+		}
+		else SendClientMessageEx(playerid, COLOR_GRAD2, "You do not have access to this.");
+	}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+CMD:jobhelp(playerid, params[]) {
+    return ShowPlayerDialog(playerid, JOBHELPMENU, DIALOG_STYLE_LIST, "Which job do you need help with?","Detective\nLawyer\nWhore\nDrug Dealer\nMechanic\nBodyguard\nArms Dealer\nBoxer\nTaxi Driver\nDrug Smuggling\nCraftsman\nBartender\nShipment Contractor\nPizza Boy", "Select", "Cancel");
+}
+
+	if(dialogid == JOBHELPMENU)
+	{
+ 		if(response)
+		{
+			if(listitem == 0) //Detective
+			{
+				ShowPlayerDialog(playerid, DETECTIVEJOB, DIALOG_STYLE_MSGBOX, "Detective", "Information:\n\nThis job can be used to locate people anywhere around San Andreas.\nThis is helpful for the Government factions, and can be used to find criminals. It is a legal job and you cannot get busted for doing it.\nIt will tell you the last known location(area) they were found in and give you a beacon.", "Next", "Cancel");
+			}
+			if(listitem == 1) //Lawyer
+			{
+				ShowPlayerDialog(playerid, LAWYERJOB, DIALOG_STYLE_MSGBOX, "Lawyer", "Information:\n\nThis job can be used to remove wanted stars, reduce jail time, and list all criminals.\nThis is helpful for criminals and crooks, it is a legal job and you cannot get busted for doing it.\nIt will come in handy for your friends and families who got trouble with the cops.", "Next", "Cancel");
+			}
+			if(listitem == 2) //Whore
+			{
+				ShowPlayerDialog(playerid, WHOREJOB, DIALOG_STYLE_MSGBOX, "Whore", "Information:\n\nThis job can be used to bring pleasure to any clients who may be interested in having some fun.\nThis is a job that offers sex to every client who comes along.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 3) //Drug Dealer
+            {
+				ShowPlayerDialog(playerid, DRUGDEALERJOB, DIALOG_STYLE_MSGBOX, "Drug Dealer", "Information:\n\nThis job can be used to sell pot and crack to any customers you might find.\nIt often comes in handy, when you're a higher level at it.\nThe higher the level, the more drugs you can hold.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 4) //Mechanic
+			{
+				ShowPlayerDialog(playerid, MECHANICJOB, DIALOG_STYLE_MSGBOX, "Mechanic", "Information:\n\nThis job can be used to repair, add nos, and add hydraulics to vehicles.\nThis job can sometimes be rewarding, but often people do not require assistance.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 5) //Bodyguard
+			{
+				ShowPlayerDialog(playerid, BODYGUARDJOB, DIALOG_STYLE_MSGBOX, "Bodyguard", "Information:\n\nThis job can be used to give people half armor.\nThis job is very profitable and the common spot for purchasing off bodyguards is the gym.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 6) //Arms Dealer
+			{
+				ShowPlayerDialog(playerid, ARMSDEALERJOB, DIALOG_STYLE_MSGBOX, "Arms Dealer", "Information:\n\nThis job can be used to sell people weapons.\nThis job is very profitable and can earn you big cash at later levels.\nThis is an illegal job and you can get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 7) //Boxer
+			{
+				ShowPlayerDialog(playerid, BOXERJOB, DIALOG_STYLE_MSGBOX, "Boxer", "Information:\n\nThis job can be used to box people inside the Ganton Gym.\nThis job is not very money-making, but you can become the boxing champion.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 8) //Taxi Driver
+            {
+				ShowPlayerDialog(playerid, TAXIJOB, DIALOG_STYLE_MSGBOX, "Taxi Driver", "Information:\n\nThis job can be used to take passengers around the city for any price you desire($1 - $500 per 16 seconds).\nThis job is not very profitable as people do not usually call taxis, and sometimes they try to steal your taxi vehicle.\nThis is a legal job and you cannot get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 9) //Drug Smuggling
+            {
+				ShowPlayerDialog(playerid, SMUGGLEJOB, DIALOG_STYLE_MSGBOX, "Drug Smuggling", "Information:\n\nThis job can be used to keep Crack and Pot filled in the Crack Lab.\nThis job is very profitable as people usually buy crack and pot, and sometimes they try to steal your pot and crack.\nThis is an ilegal job and you can get busted for doing it.", "Next", "Cancel");
+			}
+			if(listitem == 10) //Craftsman
+            {
+				ShowPlayerDialog(playerid, CRAFTJOB, DIALOG_STYLE_MSGBOX, "Craftsman", "Information:\nThis job can be used to sell crafts to other players.\nThis job is very profitable as people have a need for many of the things you can make.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/getmats /craft\nLocation of job: This job can be obtained in Willowfield at the junkyard, at the job icon(yellow circle).", "Done", "Cancel");
+			}
+			if(listitem == 11) //Bartender
+            {
+				ShowPlayerDialog(playerid, BARTENDERJOB, DIALOG_STYLE_MSGBOX, "Bartender", "Information:\nThis job can be used to sell drinks to other players.\nThis is a legal job and you can not get busted for doing it.\n\nCommands:\n/selldrink\nLocation of job: This job can be obtained in Idlewood inside the Alhambra Club, at the job icon(yellow i).", "Done", "Cancel");
+			}
+			if(listitem == 12) //Trucker
+            {
+				ShowPlayerDialog(playerid, TRUCKERJOB, DIALOG_STYLE_MSGBOX, "Shipment Contractor","Information:\nThis job can be used to earn money by making truck deliveries\nThis is a legal job, however you can get busted if you transport illegal goods or hijack trucks. Also Shipment Contractors get a 50 percent bonus for carting illegal goods.\n\nCommands:\n/loadshipment /checkcargo /hijackcargo\nLocation of job: This job can be obtained at the San Fierro Docks, at the job icon(yellow I).", "Done", "Cancel");
+			}
+			if(listitem == 13) //Pizza Boy
+            {
+				ShowPlayerDialog(playerid, PIZZAJOB, DIALOG_STYLE_MSGBOX, "Pizza Boy","Information:\nThis job can be used to earn money by grabbing a pizza from the\n SF Pizza Stack and then delivering it to different houses.\n You will get less and less money as time moves on and eventually,\n when the pizza is cold, it will be worthless.\n\nCommands:\n/getpizza\nLocation of job: This job can be obtained at the Pier 69, at the job icon(yellow I).", "Done", "Cancel");
+			}
+		}
+	}
